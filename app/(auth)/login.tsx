@@ -24,7 +24,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-app-bg">
+    <SafeAreaView className="flex-1 bg-surface">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"
@@ -34,11 +34,11 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 items-center justify-center px-6 py-8">
-            <View className="w-full rounded-[28px] bg-surface px-6 py-7 shadow-card">
+          <View className="flex-1 items-center justify-center">
+            <View className="w-full surface-softbg-surface-soft px-6 py-7">
               <TouchableOpacity
-                onPress={() => router.back()}
-                className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-soft"
+                onPress={() => router.push("/welcome")}
+                className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-muted"
                 activeOpacity={0.8}
               >
                 <Ionicons name="arrow-back" size={18} color="#1f2a44" />
@@ -65,7 +65,7 @@ export default function LoginScreen() {
                   <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Username or Email
                   </Text>
-                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface px-4 py-4">
+                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface-soft px-4 py-4">
                     <Ionicons name="person-outline" size={18} color="#8d8991" />
                     <TextInput
                       value={usernameOrEmail}
@@ -82,7 +82,7 @@ export default function LoginScreen() {
                   <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Password
                   </Text>
-                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface px-4 py-4">
+                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface-soft px-4 py-4">
                     <Ionicons
                       name="lock-closed-outline"
                       size={18}

@@ -7,7 +7,6 @@ module.exports = {
       colors: {
         app: {
           bg: "#f8f8f8",
-          surfaceBg: "#E2E8F0",
         },
         surface: {
           DEFAULT: "#ffffff",

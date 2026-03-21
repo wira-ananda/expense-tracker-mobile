@@ -5,13 +5,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
@@ -24,7 +24,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-app-bg">
+    <SafeAreaView className="flex-1 bg-surface">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"
@@ -34,11 +34,11 @@ export default function RegisterScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 items-center justify-center px-6 py-8">
-            <View className="w-full max-w-[380px] rounded-[28px] bg-surface px-6 py-7 shadow-card">
+          <View className="flex-1 items-center justify-center">
+            <View className="w-full px-6 py-7">
               <TouchableOpacity
-                onPress={() => router.back()}
-                className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-soft"
+                onPress={() => router.push("/welcome")}
+                className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-muted"
                 activeOpacity={0.8}
               >
                 <Ionicons name="arrow-back" size={18} color="#1f2a44" />

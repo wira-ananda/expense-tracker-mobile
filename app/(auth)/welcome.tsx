@@ -30,7 +30,7 @@ export default function AuthWelcomeScreen() {
               onPress={() => router.push("/(auth)/register")}
               className="mt-7 h-[52px] items-center justify-center rounded-[14px] bg-primary-600"
             >
-              <Text className="text-[14px] font-poppins-bold text-white">
+              <Text className="text-[14px] font-poppins-medium text-white">
                 Register
               </Text>
             </Pressable>
@@ -39,7 +39,7 @@ export default function AuthWelcomeScreen() {
               onPress={() => router.push("/(auth)/login")}
               className="mt-4 h-[52px] items-center justify-center rounded-[14px] border border-[#d9dde5] bg-transparent"
             >
-              <Text className="text-[14px] font-poppins-bold text-[#13213c]">
+              <Text className="text-[14px] font-poppins-medium text-[#13213c]">
                 Login
               </Text>
             </Pressable>

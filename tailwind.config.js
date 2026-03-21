@@ -7,6 +7,7 @@ module.exports = {
       colors: {
         app: {
           bg: "#f8f8f8",
+          surfaceBg: "#E2E8F0",
         },
         surface: {
           DEFAULT: "#ffffff",
@@ -32,7 +33,7 @@ module.exports = {
           600: "#1f9570",
           700: "#19785a",
         },
-        secondary: "#c4fb22"
+        secondary: "#c4fb22",
         success: {
           400: "#38d996",
           500: "#2fcf88",

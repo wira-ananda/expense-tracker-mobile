@@ -35,7 +35,7 @@ export default function LoginScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-1 items-center justify-center px-6 py-8">
-            <View className="w-full max-w-[380px] rounded-[28px] bg-surface px-6 py-7 shadow-card">
+            <View className="w-full rounded-[28px] bg-surface px-6 py-7 shadow-card">
               <TouchableOpacity
                 onPress={() => router.back()}
                 className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-soft"

@@ -5,14 +5,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function LoginScreen() {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,10 +44,10 @@ export default function LoginScreen() {
                 <Ionicons name="arrow-back" size={18} color="#1f2a44" />
               </TouchableOpacity>
 
-              <Text className="text-[36px] font-bold text-text-primary">
+              <Text className="text-[36px] font-poppins-bold text-text-primary">
                 Welcome Back
               </Text>
-              <Text className="mt-2 text-[14px] text-text-secondary">
+              <Text className="text-[14px] text-text-secondary">
                 Log in to manage your finances.
               </Text>
 
@@ -63,7 +62,7 @@ export default function LoginScreen() {
 
               <View className="mt-6 gap-y-4">
                 <View>
-                  <Text className="mb-2 text-[13px] font-medium text-text-primary">
+                  <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Username or Email
                   </Text>
                   <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface px-4 py-4">
@@ -80,7 +79,7 @@ export default function LoginScreen() {
                 </View>
 
                 <View>
-                  <Text className="mb-2 text-[13px] font-medium text-text-primary">
+                  <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Password
                   </Text>
                   <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface px-4 py-4">
@@ -119,22 +118,22 @@ export default function LoginScreen() {
 
               <TouchableOpacity
                 onPress={handleLogin}
-                className="mt-8 rounded-md bg-[#c4fb22] py-4"
+                className="mt-8 rounded-md bg-primary-600 py-4"
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-bold text-black">
+                <Text className="text-center text-[15px] font-poppins-bold text-white">
                   Log In
                 </Text>
               </TouchableOpacity>
 
               <View className="mt-6 flex-row items-center justify-center">
-                <Text className="text-[13px] text-text-secondary">
+                <Text className="text-[13px] text-text-secondary font-poppins">
                   Don't have an account?{" "}
                 </Text>
                 <TouchableOpacity
                   onPress={() => router.push("/(auth)/register")}
                 >
-                  <Text className="text-[13px] font-semibold text-text-primary">
+                  <Text className="text-[13px] font-poppins-semibold text-text-primary">
                     Register
                   </Text>
                 </TouchableOpacity>

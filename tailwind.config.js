@@ -32,6 +32,7 @@ module.exports = {
           600: "#1f9570",
           700: "#19785a",
         },
+        secondary: "#c4fb22"
         success: {
           400: "#38d996",
           500: "#2fcf88",
@@ -73,6 +74,13 @@ module.exports = {
       },
       boxShadow: {
         card: "0 2px 10px rgba(31, 42, 68, 0.05)",
+      },
+      fontFamily: {
+        "poppins-thin": ["PoppinsThin"],
+        poppins: ["PoppinsRegular"],
+        "poppins-medium": ["PoppinsMedium"],
+        "poppins-semibold": ["PoppinsSemiBold"],
+        "poppins-bold": ["PoppinsBold"],
       },
     },
   },

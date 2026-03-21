@@ -44,16 +44,16 @@ export default function RegisterScreen() {
                 <Ionicons name="arrow-back" size={18} color="#1f2a44" />
               </TouchableOpacity>
 
-              <Text className="text-[36px] font-bold text-text-primary">
+              <Text className="text-[36px] font-poppins-bold text-text-primary">
                 Create Account
               </Text>
-              <Text className="mt-2 text-[14px] text-text-secondary">
+              <Text className="text-[14px] text-text-secondary">
                 Start your financial journey today.
               </Text>
 
               <View className="mt-8 gap-y-4">
                 <View>
-                  <Text className="mb-2 text-[13px] font-medium text-text-primary">
+                  <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Username
                   </Text>
                   <View className="flex-row items-center rounded-md bg-surface-soft px-4 py-4">
@@ -69,7 +69,7 @@ export default function RegisterScreen() {
                 </View>
 
                 <View>
-                  <Text className="mb-2 text-[13px] font-medium text-text-primary">
+                  <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Email
                   </Text>
                   <View className="flex-row items-center rounded-md bg-surface-soft px-4 py-4">
@@ -87,7 +87,7 @@ export default function RegisterScreen() {
                 </View>
 
                 <View>
-                  <Text className="mb-2 text-[13px] font-medium text-text-primary">
+                  <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Password
                   </Text>
                   <View className="flex-row items-center rounded-md bg-surface-soft px-4 py-4">
@@ -117,20 +117,20 @@ export default function RegisterScreen() {
 
               <TouchableOpacity
                 onPress={handleRegister}
-                className="mt-8 rounded-md bg-[#c4fb22] py-4"
+                className="mt-8 rounded-md bg-primary-600 py-4"
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-bold text-black">
+                <Text className="text-center text-[15px] font-poppins-bold text-white">
                   Sign Up
                 </Text>
               </TouchableOpacity>
 
               <View className="mt-6 flex-row items-center justify-center">
-                <Text className="text-[13px] text-text-secondary">
+                <Text className="text-[13px] text-text-secondary font-poppins">
                   Already have an account?{" "}
                 </Text>
                 <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-                  <Text className="text-[13px] font-semibold text-text-primary">
+                  <Text className="text-[13px] font-poppins-semibold text-text-primary">
                     Log in
                   </Text>
                 </TouchableOpacity>

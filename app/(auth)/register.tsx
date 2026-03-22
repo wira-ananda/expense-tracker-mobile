@@ -1,3 +1,4 @@
+import { useRegisterMutation } from "@/hooks/use-auth";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -14,13 +15,21 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterScreen() {
+  const registerMutation = useRegisterMutation();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const hasError = registerMutation.isError;
+
   const handleRegister = () => {
-    console.log({ username, email, password });
+    registerMutation.mutate({
+      username: username.trim(),
+      email: email.trim(),
+      password,
+    });
   };
 
   return (
@@ -51,6 +60,15 @@ export default function RegisterScreen() {
                 Start your financial journey today.
               </Text>
 
+              {hasError && (
+                <View className="mt-5 flex-row items-center rounded-md border border-[#f6c7c0] bg-[#fff5f3] px-4 py-3">
+                  <Ionicons name="alert-circle" size={16} color="#ff6b57" />
+                  <Text className="ml-2 text-[13px] text-danger-500">
+                    Registrasi gagal. Periksa kembali data Anda.
+                  </Text>
+                </View>
+              )}
+
               <View className="mt-8 gap-y-4">
                 <View>
                   <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
@@ -63,6 +81,7 @@ export default function RegisterScreen() {
                       onChangeText={setUsername}
                       placeholder="johndoe"
                       placeholderTextColor="#b9b5bf"
+                      autoCapitalize="none"
                       className="ml-3 flex-1 text-[14px] text-text-primary"
                     />
                   </View>
@@ -117,16 +136,21 @@ export default function RegisterScreen() {
 
               <TouchableOpacity
                 onPress={handleRegister}
-                className="mt-8 rounded-md bg-primary-600 py-4"
+                disabled={registerMutation.isPending}
+                className={`mt-8 rounded-md py-4 ${
+                  registerMutation.isPending
+                    ? "bg-primary-400"
+                    : "bg-primary-600"
+                }`}
                 activeOpacity={0.85}
               >
                 <Text className="text-center text-[15px] font-poppins-bold text-white">
-                  Sign Up
+                  {registerMutation.isPending ? "Loading..." : "Sign Up"}
                 </Text>
               </TouchableOpacity>
 
               <View className="mt-6 flex-row items-center justify-center">
-                <Text className="text-[13px] text-text-secondary font-poppins">
+                <Text className="font-poppins text-[13px] text-text-secondary">
                   Already have an account?{" "}
                 </Text>
                 <TouchableOpacity onPress={() => router.push("/(auth)/login")}>

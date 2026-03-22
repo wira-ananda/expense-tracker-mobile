@@ -87,14 +87,21 @@ export const useRegisterMutation = () => {
       );
       return data;
     },
+
     onSuccess: () => {
       Toast.show({
         type: "success",
         text1: "Registrasi Berhasil",
         text2: "Silakan login dengan akun baru Anda.",
       });
+
+      router.replace("/(auth)/login");
     },
-    onError: errorMiddleware,
+
+    onError: (err) => {
+      console.log("REGISTER ERROR:", err);
+      errorMiddleware(err);
+    },
   });
 };
 

@@ -141,7 +141,7 @@ export default function LoginScreen() {
                 }`}
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-poppins-bold text-white">
+                <Text className="text-center text-[15px] font-poppins-bold text-black">
                   {loginMutation.isPending ? "Loading..." : "Log In"}
                 </Text>
               </TouchableOpacity>

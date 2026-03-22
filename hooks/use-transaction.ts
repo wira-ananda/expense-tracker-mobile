@@ -57,11 +57,45 @@ type UseTransactionHistoryByMonthParams = {
   enabled?: boolean;
 };
 
+type GetTransactionsResponseRaw = TransactionHistoryItemRaw[];
+export type GetTransactionsResponse = TransactionHistoryItem[];
+
+const normalizeTransaction = (
+  item: TransactionHistoryItemRaw,
+): TransactionHistoryItem => ({
+  ...item,
+  amount: Number(item.amount),
+});
+
 export const transactionQueryKeys = {
   all: ["transactions"] as const,
+  list: () => [...transactionQueryKeys.all, "list"] as const,
   history: () => [...transactionQueryKeys.all, "history"] as const,
   historyByMonth: (year: number, month: number) =>
     [...transactionQueryKeys.history(), "by-month", year, month] as const,
+};
+
+export const useTransactionsQuery = (enabled = true) => {
+  return useQuery<GetTransactionsResponse, unknown>({
+    queryKey: transactionQueryKeys.list(),
+    queryFn: async () => {
+      const { data } =
+        await axiosInstance.get<GetTransactionsResponseRaw>("/transactions");
+
+      return data
+        .map(normalizeTransaction)
+        .sort(
+          (a, b) =>
+            new Date(b.transactionDate).getTime() -
+            new Date(a.transactionDate).getTime(),
+        );
+    },
+    enabled,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    retry: 1,
+    throwOnError: false,
+  });
 };
 
 export const useTransactionHistoryByMonthQuery = ({
@@ -92,10 +126,7 @@ export const useTransactionHistoryByMonthQuery = ({
         income: Number(data.income),
         expense: Number(data.expense),
         balance: Number(data.balance),
-        transactions: data.transactions.map((item) => ({
-          ...item,
-          amount: Number(item.amount),
-        })),
+        transactions: data.transactions.map(normalizeTransaction),
       };
     },
     enabled: enabled && !!year && !!month,

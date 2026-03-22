@@ -144,7 +144,7 @@ export default function RegisterScreen() {
                 }`}
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-poppins-bold text-white">
+                <Text className="text-center text-[15px] font-poppins-bold text-black">
                   {registerMutation.isPending ? "Loading..." : "Sign Up"}
                 </Text>
               </TouchableOpacity>

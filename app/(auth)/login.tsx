@@ -1,3 +1,5 @@
+import { useLoginMutation } from "@/hooks/use-auth";
+import { useGlobalContext } from "@/hooks/use-global-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -12,15 +14,22 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function LoginScreen() {
+  const loginMutation = useLoginMutation();
+
+  const { passwordVisible, handlePasswordVisible } = useGlobalContext();
+
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
-  const hasError = true;
+  const hasError = loginMutation.isError;
 
   const handleLogin = () => {
-    console.log({ usernameOrEmail, password });
+    loginMutation.mutate({
+      usernameOrEmail,
+      password,
+    });
   };
 
   return (
@@ -65,7 +74,9 @@ export default function LoginScreen() {
                   <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Username or Email
                   </Text>
-                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface-soft px-4 py-4">
+                  <View
+                    className={`flex-row items-center rounded-md border ${hasError && "border-[#f6b8b0]"} bg-surface-soft px-4 py-4`}
+                  >
                     <Ionicons name="person-outline" size={18} color="#8d8991" />
                     <TextInput
                       value={usernameOrEmail}
@@ -82,7 +93,9 @@ export default function LoginScreen() {
                   <Text className="mb-2 text-[13px] font-poppins-medium text-text-primary">
                     Password
                   </Text>
-                  <View className="flex-row items-center rounded-md border border-[#f6b8b0] bg-surface-soft px-4 py-4">
+                  <View
+                    className={`flex-row items-center rounded-md border ${hasError && "border-[#f6b8b0]"} bg-surface-soft px-4 py-4`}
+                  >
                     <Ionicons
                       name="lock-closed-outline"
                       size={18}
@@ -93,12 +106,14 @@ export default function LoginScreen() {
                       onChangeText={setPassword}
                       placeholder="••••••••••••"
                       placeholderTextColor="#b9b5bf"
-                      secureTextEntry={!showPassword}
+                      secureTextEntry={!passwordVisible}
                       className="ml-3 flex-1 text-[14px] text-text-primary"
                     />
-                    <Pressable onPress={() => setShowPassword((prev) => !prev)}>
+                    <Pressable onPress={handlePasswordVisible}>
                       <Ionicons
-                        name={showPassword ? "eye-outline" : "eye-off-outline"}
+                        name={
+                          passwordVisible ? "eye-outline" : "eye-off-outline"
+                        }
                         size={18}
                         color="#8d8991"
                       />
@@ -118,16 +133,19 @@ export default function LoginScreen() {
 
               <TouchableOpacity
                 onPress={handleLogin}
-                className="mt-8 rounded-md bg-primary-600 py-4"
+                disabled={loginMutation.isPending}
+                className={`mt-8 rounded-md py-4 ${
+                  loginMutation.isPending ? "bg-primary-400" : "bg-primary-600"
+                }`}
                 activeOpacity={0.85}
               >
                 <Text className="text-center text-[15px] font-poppins-bold text-white">
-                  Log In
+                  {loginMutation.isPending ? "Loading..." : "Log In"}
                 </Text>
               </TouchableOpacity>
 
               <View className="mt-6 flex-row items-center justify-center">
-                <Text className="text-[13px] text-text-secondary font-poppins">
+                <Text className="font-poppins text-[13px] text-text-secondary">
                   Don't have an account?{" "}
                 </Text>
                 <TouchableOpacity

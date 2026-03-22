@@ -120,3 +120,16 @@ export const useRegisterMutation = () => {
 //     staleTime: 1000 * 60 * 5,
 //   });
 // };
+
+// export const useUpdateUserMutation = () => {
+//   return useMutation({
+//     mutationFn: async ({ userId, userData }) => {
+//       const { data } = await axiosInstance.put(`users/${userId}`, userData);
+//       return data;
+//     },
+//     onSuccess: (data) => {
+//       message.success(data.message || "User berhasil diperbarui");
+//     },
+//     onError: errorMiddleware,
+//   });
+// };

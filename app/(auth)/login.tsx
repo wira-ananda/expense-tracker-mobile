@@ -135,7 +135,9 @@ export default function LoginScreen() {
                 onPress={handleLogin}
                 disabled={loginMutation.isPending}
                 className={`mt-8 rounded-md py-4 ${
-                  loginMutation.isPending ? "bg-primary-400" : "bg-primary-600"
+                  loginMutation.isPending
+                    ? "bg-primary-100"
+                    : "bg-secondary-200"
                 }`}
                 activeOpacity={0.85}
               >

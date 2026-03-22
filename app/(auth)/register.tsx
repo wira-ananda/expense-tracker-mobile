@@ -139,8 +139,8 @@ export default function RegisterScreen() {
                 disabled={registerMutation.isPending}
                 className={`mt-8 rounded-md py-4 ${
                   registerMutation.isPending
-                    ? "bg-primary-400"
-                    : "bg-primary-600"
+                    ? "bg-primary-100"
+                    : "bg-secondary-200"
                 }`}
                 activeOpacity={0.85}
               >
@@ -149,7 +149,7 @@ export default function RegisterScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <View className="mt-6 fwlex-row items-center justify-center">
+              <View className="mt-6 flex-row items-center justify-center">
                 <Text className="font-poppins text-[13px] text-text-secondary">
                   Already have an account?{" "}
                 </Text>

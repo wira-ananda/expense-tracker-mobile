@@ -149,7 +149,7 @@ export default function RegisterScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <View className="mt-6 flex-row items-center justify-center">
+              <View className="mt-6 fwlex-row items-center justify-center">
                 <Text className="font-poppins text-[13px] text-text-secondary">
                   Already have an account?{" "}
                 </Text>

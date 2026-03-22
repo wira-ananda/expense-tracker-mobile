@@ -32,7 +32,7 @@ function RootNavigation() {
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!token && !inAuthGroup) {
-      router.replace("/(auth)/login");
+      router.replace("/splash");
     } else if (token && inAuthGroup) {
       router.replace("/(tabs)");
     }

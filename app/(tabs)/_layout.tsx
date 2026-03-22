@@ -66,6 +66,16 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="add"
+        options={{
+          title: "",
+          tabBarLabel: () => null,
+          tabBarIcon: () => null,
+          tabBarButton: (props) => <FloatingAddButton {...props} />,
+        }}
+      />
+
+      <Tabs.Screen
         name="history"
         options={{
           title: "History",
@@ -79,17 +89,7 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="add"
-        options={{
-          title: "",
-          tabBarLabel: () => null,
-          tabBarIcon: () => null,
-          tabBarButton: (props) => <FloatingAddButton {...props} />,
-        }}
-      />
-
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="summary"
         options={{
           title: "Summary",
@@ -115,7 +115,7 @@ export default function TabLayout() {
             />
           ),
         }}
-      />
+      /> */}
     </Tabs>
   );
 }

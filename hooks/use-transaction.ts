@@ -1,5 +1,5 @@
 import axiosInstance from "@/middleware/axios-instance";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export type CategoryType = "income" | "expense";
 export type TransactionType = "income" | "expense";
@@ -60,6 +60,9 @@ type UseTransactionHistoryByMonthParams = {
 type GetTransactionsResponseRaw = TransactionHistoryItemRaw[];
 export type GetTransactionsResponse = TransactionHistoryItem[];
 
+type GetCategoriesResponseRaw = Category[];
+export type GetCategoriesResponse = Category[];
+
 const normalizeTransaction = (
   item: TransactionHistoryItemRaw,
 ): TransactionHistoryItem => ({
@@ -73,6 +76,13 @@ export const transactionQueryKeys = {
   history: () => [...transactionQueryKeys.all, "history"] as const,
   historyByMonth: (year: number, month: number) =>
     [...transactionQueryKeys.history(), "by-month", year, month] as const,
+};
+
+export const categoryQueryKeys = {
+  all: ["categories"] as const,
+  list: () => [...categoryQueryKeys.all, "list"] as const,
+  byType: (type: CategoryType) =>
+    [...categoryQueryKeys.list(), "by-type", type] as const,
 };
 
 export const useTransactionsQuery = (enabled = true) => {
@@ -89,6 +99,35 @@ export const useTransactionsQuery = (enabled = true) => {
             new Date(b.transactionDate).getTime() -
             new Date(a.transactionDate).getTime(),
         );
+    },
+    enabled,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    retry: 1,
+    throwOnError: false,
+  });
+};
+
+export const useCategoriesQuery = (type?: CategoryType, enabled = true) => {
+  return useQuery<GetCategoriesResponse, unknown>({
+    queryKey: type ? categoryQueryKeys.byType(type) : categoryQueryKeys.list(),
+    queryFn: async () => {
+      const { data } =
+        await axiosInstance.get<GetCategoriesResponseRaw>("/categories");
+
+      const sorted = [...data].sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type.localeCompare(b.type);
+        }
+
+        return a.categoryname.localeCompare(b.categoryname);
+      });
+
+      if (!type) {
+        return sorted;
+      }
+
+      return sorted.filter((item) => item.type === type);
     },
     enabled,
     staleTime: 1000 * 60 * 5,
@@ -134,5 +173,37 @@ export const useTransactionHistoryByMonthQuery = ({
     gcTime: 1000 * 60 * 10,
     retry: 1,
     throwOnError: false,
+  });
+};
+
+export type CreateTransactionPayload = {
+  categoryId: string;
+  amount: number;
+  note?: string | null;
+  transactionDate: string;
+};
+
+export const useCreateTransactionMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, unknown, CreateTransactionPayload>({
+    mutationFn: async (payload) => {
+      await axiosInstance.post("/transactions", {
+        categoryId: payload.categoryId,
+        amount: payload.amount,
+        note: payload.note?.trim() ? payload.note.trim() : undefined,
+        transactionDate: payload.transactionDate,
+      });
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: transactionQueryKeys.list(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: transactionQueryKeys.history(),
+        }),
+      ]);
+    },
   });
 };

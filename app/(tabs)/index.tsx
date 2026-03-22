@@ -11,7 +11,6 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -287,13 +286,13 @@ export default function HomeScreen() {
         <View className="mx-4 mt-4 rounded-[36px] bg-[#070707] px-5 pb-16 pt-5">
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center">
-              <View className="mr-3 h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#C9FF1A]">
-                <Image
-                  source={{ uri: "https://i.pravatar.cc/100?img=12" }}
-                  className="h-full w-full"
-                  resizeMode="cover"
-                />
-              </View>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => router.push("/profile")}
+                className="mr-3 h-14 w-14 items-center justify-center rounded-full border-2 border-[#C9FF1A] bg-[#25324A]"
+              >
+                <Ionicons name="person-outline" size={26} color="#FFFFFF" />
+              </TouchableOpacity>
 
               <View>
                 <Text className="font-poppins text-[14px] text-[#B9BEC8]">
@@ -368,9 +367,9 @@ export default function HomeScreen() {
           />
         </View>
 
-        <View className="mt-8 px-6">
-          <View className="flex-row items-center justify-between">
-            <Text className="font-poppins-semibold text-[20px] text-[#1F2A44]">
+        <View className="mt-4 px-6">
+          <View className="flex-row items-center justify-between px-2">
+            <Text className="font-poppins-semibold text-[20px] text-[#1F2A44] ">
               Recent Transactions
             </Text>
             <TouchableOpacity activeOpacity={0.8}>
@@ -384,7 +383,7 @@ export default function HomeScreen() {
           </View>
 
           <View
-            className="mt-5 rounded-[24px] bg-white px-5 py-2"
+            className="mt-2 rounded-[24px] bg-white px-5 py-2"
             style={styles.cardShadow}
           >
             {currentData.transactions.length === 0 ? (
@@ -398,12 +397,13 @@ export default function HomeScreen() {
                 </Text>
               </View>
             ) : (
-              currentData.transactions.map((item, index) => (
+              currentData.transactions.slice(0, 3).map((item, index, array) => (
                 <View key={item.id}>
                   <TransactionRow item={item} />
-                  {index !== currentData.transactions.length - 1 ? (
+
+                  {index !== array.length - 1 && (
                     <View className="h-[1px] bg-[#F1F3F7]" />
-                  ) : null}
+                  )}
                 </View>
               ))
             )}

@@ -46,7 +46,7 @@ export default function RegisterScreen() {
           <View className="flex-1 items-center justify-center">
             <View className="w-full px-6 py-7">
               <TouchableOpacity
-                onPress={() => router.push("/welcome")}
+                onPress={() => router.push("/(auth)/")}
                 className="mb-7 h-10 w-10 items-center justify-center rounded-full bg-surface-muted"
                 activeOpacity={0.8}
               >

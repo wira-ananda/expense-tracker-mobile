@@ -36,7 +36,7 @@ function RootNavigation() {
     } else if (token && inAuthGroup) {
       router.replace("/(tabs)");
     }
-  }, [token, isLoading, segments]);
+  }, [router, token, isLoading, segments]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

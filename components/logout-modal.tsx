@@ -45,7 +45,7 @@ export function LogoutModal({ visible, onClose, onConfirm }: LogoutModalProps) {
             <TouchableOpacity
               onPress={onClose}
               activeOpacity={0.8}
-              className="flex-1 py-4 rounded-[20px] bg-[#252528]"
+              className="flex-1 py-4 rounded-[20px]"
             >
               <Text className="text-center font-poppins-semibold text-black text-[15px]">
                 Batal

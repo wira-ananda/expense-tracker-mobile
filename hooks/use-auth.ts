@@ -23,9 +23,9 @@ type User = {
   email: string;
 };
 
-type AuthUserResponse = {
-  user: User;
-};
+// type AuthUserResponse = {
+//   user: User;
+// };
 
 type RegisterResponse = {
   message?: string;

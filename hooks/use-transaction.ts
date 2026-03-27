@@ -1,15 +1,10 @@
 import axiosInstance from "@/middleware/axios-instance";
+import {
+  Category,
+  TransactionHistoryItem,
+  TransactionType,
+} from "@/middleware/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-export type CategoryType = "income" | "expense";
-export type TransactionType = "income" | "expense";
-
-export type Category = {
-  id: string;
-  userId: string;
-  categoryname: string;
-  type: CategoryType;
-};
 
 type TransactionHistoryItemRaw = {
   id: string;
@@ -17,17 +12,6 @@ type TransactionHistoryItemRaw = {
   categoryId: string;
   type: TransactionType;
   amount: string | number;
-  note: string | null;
-  transactionDate: string;
-  category: Category;
-};
-
-export type TransactionHistoryItem = {
-  id: string;
-  userId: string;
-  categoryId: string;
-  type: TransactionType;
-  amount: number;
   note: string | null;
   transactionDate: string;
   category: Category;
@@ -42,7 +26,7 @@ type GetTransactionHistoryByMonthResponseRaw = {
   transactions: TransactionHistoryItemRaw[];
 };
 
-export type GetTransactionHistoryByMonthResponse = {
+type GetTransactionHistoryByMonthResponse = {
   year: number;
   month: number;
   income: number;
@@ -81,7 +65,7 @@ export const transactionQueryKeys = {
 export const categoryQueryKeys = {
   all: ["categories"] as const,
   list: () => [...categoryQueryKeys.all, "list"] as const,
-  byType: (type: CategoryType) =>
+  byType: (type: TransactionType) =>
     [...categoryQueryKeys.list(), "by-type", type] as const,
 };
 
@@ -108,7 +92,7 @@ export const useTransactionsQuery = (enabled = true) => {
   });
 };
 
-export const useCategoriesQuery = (type?: CategoryType, enabled = true) => {
+export const useCategoriesQuery = (type?: TransactionType, enabled = true) => {
   return useQuery<GetCategoriesResponse, unknown>({
     queryKey: type ? categoryQueryKeys.byType(type) : categoryQueryKeys.list(),
     queryFn: async () => {

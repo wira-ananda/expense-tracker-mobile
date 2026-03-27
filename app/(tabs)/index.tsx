@@ -1,10 +1,14 @@
+import { LogoutModal } from "@/components/logout-modal";
 import { useGlobalContext } from "@/hooks/use-global-context";
+import { useTransactionHistoryByMonthQuery } from "@/hooks/use-transaction";
 import {
   TransactionHistoryItem,
-  TransactionType,
-  useTransactionHistoryByMonthQuery,
-} from "@/hooks/use-transaction";
+  formatRupiah,
+  formatSignedRupiah,
+  getAppVisual,
+} from "@/middleware/constants";
 import errorMiddleware from "@/middleware/error-middleware";
+import { appShadows } from "@/styles/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -12,29 +16,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function formatSignedRupiah(value: number, type: TransactionType) {
-  const sign = type === "expense" ? "-" : "+";
-  return `${sign}${formatRupiah(value)}`;
-}
-
 function formatTransactionDate(dateString: string) {
   const date = new Date(dateString);
-
   return date.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "short",
@@ -47,27 +36,6 @@ function formatMonthYearLabel(date: Date) {
     month: "long",
     year: "numeric",
   }).format(date);
-}
-
-function getCategoryIcon(categoryname: string): keyof typeof Ionicons.glyphMap {
-  const name = categoryname.toLowerCase();
-
-  if (name.includes("gaji")) return "briefcase";
-  if (name.includes("belanja")) return "cart";
-  if (name.includes("listrik")) return "flash";
-  if (name.includes("makan")) return "restaurant";
-  if (name.includes("transport")) return "car";
-  if (name.includes("internet")) return "wifi";
-
-  return "wallet";
-}
-
-function getCategoryIconBg(type: "income" | "expense") {
-  return type === "income" ? "#EEF7D2" : "#EAF1FF";
-}
-
-function getCategoryIconColor(type: "income" | "expense") {
-  return type === "income" ? "#4DAA57" : "#4F8DF7";
 }
 
 function SummaryCard({
@@ -84,7 +52,7 @@ function SummaryCard({
   return (
     <View
       className="flex-1 rounded-[22px] bg-white px-4 py-4"
-      style={styles.cardShadow}
+      style={appShadows.homeCard}
     >
       <View className="flex-row items-center gap-3">
         <View
@@ -114,25 +82,22 @@ function SummaryCard({
 
 function TransactionRow({ item }: { item: TransactionHistoryItem }) {
   const isExpense = item.type === "expense";
+  const visual = getAppVisual(item.category.categoryname, item.type);
 
   return (
     <View className="flex-row items-center justify-between py-4">
       <View className="flex-1 flex-row items-center pr-3">
         <View
           className="mr-4 h-12 w-12 items-center justify-center rounded-full"
-          style={{ backgroundColor: getCategoryIconBg(item.category.type) }}
+          style={{ backgroundColor: visual.iconBg }}
         >
-          <Ionicons
-            name={getCategoryIcon(item.category.categoryname)}
-            size={20}
-            color={getCategoryIconColor(item.category.type)}
-          />
+          <Ionicons name={visual.icon} size={20} color={visual.iconColor} />
         </View>
 
         <View className="flex-1">
           <Text
             numberOfLines={1}
-            className="font-poppins-semibold text-[16px] text-[#1F2A44]"
+            className="font-poppins-semibold text-[14px] text-[#1F2A44]"
           >
             {item.category.categoryname}
           </Text>
@@ -173,14 +138,13 @@ function clampDate(date: Date, minDate: Date, maxDate: Date) {
 export default function HomeScreen() {
   const { logout, user } = useGlobalContext();
 
+  const [isLogoutVisible, setIsLogoutVisible] = useState(false);
+
   const now = useMemo(() => new Date(), []);
   const maxAllowedDate = useMemo(() => getMonthStart(now), [now]);
 
   const minAllowedDate = useMemo(() => {
-    if (!user?.createdAt) {
-      return maxAllowedDate;
-    }
-
+    if (!user?.createdAt) return maxAllowedDate;
     return getMonthStart(new Date(user.createdAt));
   }, [user?.createdAt, maxAllowedDate]);
 
@@ -266,7 +230,6 @@ export default function HomeScreen() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-
     if (hour < 12) return "Good Morning";
     if (hour < 17) return "Good Afternoon";
     if (hour < 21) return "Good Evening";
@@ -306,41 +269,63 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={logout}
+              onPress={() => setIsLogoutVisible(true)} // Buka modal
               className="h-12 w-12 items-center justify-center rounded-full bg-[#1B1B1D]"
             >
               <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
-          <View className="mt-6 flex-row items-center justify-between rounded-[18px] bg-[#151517] px-4 py-4">
+          <View
+            id="perbaikiIni"
+            className="mt-6 flex-row items-center justify-between rounded-[24px] bg-[#151517] border border-[#252528] px-2 py-2"
+          >
+            {/* Tombol Back */}
             <TouchableOpacity
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={handlePrevMonth}
               disabled={isAtMinMonth}
-              className={isAtMinMonth ? "opacity-40" : "opacity-100"}
+              className={`h-12 w-12 items-center justify-center rounded-full ${
+                isAtMinMonth ? "opacity-20" : "bg-[#1B1B1D]"
+              }`}
             >
-              <Ionicons name="chevron-back" size={22} color="#B2B8C3" />
+              <Ionicons
+                name="chevron-back"
+                size={20}
+                color={isAtMinMonth ? "#B2B8C3" : "#C9FF1A"}
+              />
             </TouchableOpacity>
 
-            <View className="items-center">
-              <Text className="font-poppins-semibold text-[17px] text-white">
+            {/* Label Bulan */}
+            <View className="items-center px-4">
+              <Text className="font-poppins-bold text-[16px] tracking-tight text-white">
                 {monthLabel}
               </Text>
               {isFetching ? (
-                <Text className="mt-1 font-poppins text-[11px] text-[#B2B8C3]">
-                  Memuat...
+                <View className="absolute -bottom-5">
+                  <ActivityIndicator size="small" color="#C9FF1A" />
+                </View>
+              ) : (
+                <Text className="font-poppins text-[10px] uppercase tracking-[1px] text-[#5E6678]">
+                  Transaction Period
                 </Text>
-              ) : null}
+              )}
             </View>
 
+            {/* Tombol Next */}
             <TouchableOpacity
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={handleNextMonth}
               disabled={isAtMaxMonth}
-              className={isAtMaxMonth ? "opacity-40" : "opacity-100"}
+              className={`h-12 w-12 items-center justify-center rounded-full ${
+                isAtMaxMonth ? "opacity-20" : "bg-[#1B1B1D]"
+              }`}
             >
-              <Ionicons name="chevron-forward" size={22} color="#B2B8C3" />
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={isAtMaxMonth ? "#B2B8C3" : "#C9FF1A"}
+              />
             </TouchableOpacity>
           </View>
 
@@ -372,11 +357,11 @@ export default function HomeScreen() {
             <Text className="font-poppins-semibold text-[20px] text-[#1F2A44] ">
               Recent Transactions
             </Text>
-            <TouchableOpacity activeOpacity={0.8}>
-              <Text
-                onPress={() => router.push("/(tabs)/history")}
-                className="font-poppins-medium text-[14px] text-[#7E8AA2]"
-              >
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => router.push("/(tabs)/history")}
+            >
+              <Text className="font-poppins-medium text-[14px] text-[#7E8AA2]">
                 See All
               </Text>
             </TouchableOpacity>
@@ -384,7 +369,7 @@ export default function HomeScreen() {
 
           <View
             className="mt-2 rounded-[24px] bg-white px-5 py-2"
-            style={styles.cardShadow}
+            style={appShadows.homeCard}
           >
             {currentData.transactions.length === 0 ? (
               <View className="items-center py-8">
@@ -400,7 +385,6 @@ export default function HomeScreen() {
               currentData.transactions.slice(0, 3).map((item, index, array) => (
                 <View key={item.id}>
                   <TransactionRow item={item} />
-
                   {index !== array.length - 1 && (
                     <View className="h-[1px] bg-[#F1F3F7]" />
                   )}
@@ -410,15 +394,14 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
+      <LogoutModal
+        visible={isLogoutVisible}
+        onClose={() => setIsLogoutVisible(false)}
+        onConfirm={() => {
+          setIsLogoutVisible(false);
+          logout(); // Panggil fungsi logout beneran
+        }}
+      />
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  cardShadow: {
-    shadowColor: "#22304A",
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-  },
-});

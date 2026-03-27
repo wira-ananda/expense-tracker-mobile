@@ -139,12 +139,12 @@ export default function RegisterScreen() {
                 disabled={registerMutation.isPending}
                 className={`mt-8 rounded-md py-4 ${
                   registerMutation.isPending
-                    ? "bg-primary-100"
-                    : "bg-secondary-200"
+                    ? "bg-secondary-100"
+                    : "bg-primary-500"
                 }`}
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-poppins-bold text-black">
+                <Text className="text-center text-[15px] font-poppins-bold text-white">
                   {registerMutation.isPending ? "Loading..." : "Sign Up"}
                 </Text>
               </TouchableOpacity>

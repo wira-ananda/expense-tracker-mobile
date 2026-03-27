@@ -135,20 +135,18 @@ export default function LoginScreen() {
                 onPress={handleLogin}
                 disabled={loginMutation.isPending}
                 className={`mt-8 rounded-md py-4 ${
-                  loginMutation.isPending
-                    ? "bg-primary-100"
-                    : "bg-secondary-200"
+                  loginMutation.isPending ? "bg-primary-700" : "bg-primary-500"
                 }`}
                 activeOpacity={0.85}
               >
-                <Text className="text-center text-[15px] font-poppins-bold text-black">
+                <Text className="text-center text-[15px] font-poppins-bold text-white">
                   {loginMutation.isPending ? "Loading..." : "Log In"}
                 </Text>
               </TouchableOpacity>
 
               <View className="mt-6 flex-row items-center justify-center">
                 <Text className="font-poppins text-[13px] text-text-secondary">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                 </Text>
                 <TouchableOpacity
                   onPress={() => router.push("/(auth)/register")}

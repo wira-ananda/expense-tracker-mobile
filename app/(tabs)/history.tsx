@@ -1,9 +1,12 @@
+import { useTransactionsQuery } from "@/hooks/use-transaction";
 import {
   TransactionHistoryItem,
   TransactionType,
-  useTransactionsQuery,
-} from "@/hooks/use-transaction";
+  formatRupiah,
+  getTransactionVisual,
+} from "@/middleware/constants";
 import errorMiddleware from "@/middleware/error-middleware";
+import { appShadows } from "@/styles/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
@@ -11,7 +14,6 @@ import {
   ActivityIndicator,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -34,14 +36,6 @@ const TYPE_TABS: { label: string; value: FilterType }[] = [
   { label: "Expense", value: "expense" },
 ];
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
 function formatTransactionTime(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -57,28 +51,6 @@ function formatSectionDate(date: Date) {
   })
     .format(date)
     .toUpperCase();
-}
-
-function parseDateInput(value: string) {
-  const input = value.trim();
-
-  if (!input) return null;
-
-  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-    const [year, month, day] = input.split("-").map(Number);
-    const date = new Date(year, month - 1, day);
-
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(input)) {
-    const [day, month, year] = input.split("/").map(Number);
-    const date = new Date(year, month - 1, day);
-
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  return null;
 }
 
 function getStartOfDay(date: Date) {
@@ -133,89 +105,6 @@ function getSectionTitle(dateString: string) {
   if (isYesterday(date)) return "YESTERDAY";
 
   return formatSectionDate(date);
-}
-
-function getTransactionVisual(item: TransactionHistoryItem): {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconBg: string;
-  iconColor: string;
-} {
-  const category = item.category.categoryname.toLowerCase();
-  const isIncome = item.type === "income";
-
-  if (category.includes("makan") || category.includes("food")) {
-    return {
-      icon: "restaurant",
-      iconBg: "#FFF3E8",
-      iconColor: "#F29C4B",
-    };
-  }
-
-  if (
-    category.includes("belanja") ||
-    category.includes("shopping") ||
-    category.includes("grocery")
-  ) {
-    return {
-      icon: "cart",
-      iconBg: "#FDECEC",
-      iconColor: "#FF5D52",
-    };
-  }
-
-  if (
-    category.includes("transport") ||
-    category.includes("travel") ||
-    category.includes("bensin")
-  ) {
-    return {
-      icon: "bus",
-      iconBg: "#EAF1FF",
-      iconColor: "#4F8DF7",
-    };
-  }
-
-  if (
-    category.includes("gaji") ||
-    category.includes("bonus") ||
-    category.includes("salary")
-  ) {
-    return {
-      icon: "trending-up",
-      iconBg: "#EAF8F0",
-      iconColor: "#2FB36F",
-    };
-  }
-
-  if (category.includes("listrik")) {
-    return {
-      icon: "flash",
-      iconBg: "#FFF3E8",
-      iconColor: "#F29C4B",
-    };
-  }
-
-  if (category.includes("internet")) {
-    return {
-      icon: "wifi",
-      iconBg: "#EAF1FF",
-      iconColor: "#4F8DF7",
-    };
-  }
-
-  if (category.includes("hiburan")) {
-    return {
-      icon: "game-controller",
-      iconBg: "#F4EEFF",
-      iconColor: "#8B5CF6",
-    };
-  }
-
-  return {
-    icon: isIncome ? "trending-up" : "wallet",
-    iconBg: isIncome ? "#EAF8F0" : "#FDECEC",
-    iconColor: isIncome ? "#2FB36F" : "#FF5D52",
-  };
 }
 
 function buildSections(items: TransactionHistoryItem[]): TransactionSection[] {
@@ -302,24 +191,27 @@ function FilterDateInput({
 
 function SummaryBar({ income, expense }: { income: number; expense: number }) {
   return (
-    <View className="mt-4 rounded-[18px] bg-[#2FB36F] px-5 py-4">
+    <View
+      className="mt-4 rounded-[18px] bg-white px-5 py-4"
+      style={appShadows.surfaceCard}
+    >
       <View className="flex-row items-center justify-between">
         <View className="flex-1 pr-4">
-          <Text className="font-poppins-medium text-sm text-gray-200">
+          <Text className="font-poppins-medium text-[11px] text-[#6E7C76]">
             Total Income
           </Text>
-          <Text className="mt-0.5 font-poppins-bold text-md text-white">
+          <Text className="mt-1 font-poppins-bold text-[16px] text-[#22915A]">
             {formatRupiah(income)}
           </Text>
         </View>
 
-        <View className="h-12 w-[1px] bg-[#49C394]" />
+        <View className="h-12 w-[1px] bg-[#DCE9E1]" />
 
         <View className="flex-1 pl-4">
-          <Text className="text-right font-poppins-medium text-sm text-gray-200">
+          <Text className="text-right font-poppins-medium text-[11px] text-[#6E7C76]">
             Total Expense
           </Text>
-          <Text className="mt-0.5 text-right font-poppins-bold text-md text-white">
+          <Text className="mt-1 text-right font-poppins-bold text-[16px] text-[#E2584D]">
             {formatRupiah(expense)}
           </Text>
         </View>
@@ -338,7 +230,7 @@ function TransactionCard({ item }: { item: TransactionHistoryItem }) {
 
   return (
     <View
-      style={styles.cardShadow}
+      style={appShadows.surfaceCard}
       className="rounded-[18px] bg-white px-4 py-4"
     >
       <View className="flex-row items-center justify-between">
@@ -529,7 +421,7 @@ export default function HistoryScreen() {
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={resetFilters}
-            style={styles.iconButtonShadow}
+            style={appShadows.softButton}
             className="h-12 w-12 items-center justify-center rounded-full bg-[#F0F1F4]"
           >
             <Ionicons name="options-outline" size={20} color="#5E6678" />
@@ -663,20 +555,3 @@ export default function HistoryScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  cardShadow: {
-    shadowColor: "#1B2431",
-    shadowOpacity: 0.06,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
-  },
-  iconButtonShadow: {
-    shadowColor: "#1B2431",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-  },
-});

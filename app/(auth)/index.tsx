@@ -28,9 +28,9 @@ export default function AuthWelcomeScreen() {
 
             <Pressable
               onPress={() => router.push("/(auth)/register")}
-              className="mt-7 h-[52px] items-center justify-center rounded-[14px] bg-secondary-100"
+              className="mt-7 h-[52px] items-center justify-center rounded-[14px] bg-primary-500"
             >
-              <Text className="text-[14px] font-poppins-medium text-black">
+              <Text className="text-[14px] font-poppins-medium text-white">
                 Register
               </Text>
             </Pressable>

@@ -7,21 +7,24 @@ import { Platform, TouchableOpacity, View } from "react-native";
 function FloatingAddButton({ onPress }: BottomTabBarButtonProps) {
   return (
     <TouchableOpacity
-      activeOpacity={0.85}
+      activeOpacity={0.9}
       onPress={onPress ?? undefined}
       className="items-center justify-center"
     >
       <View
-        className="h-16 w-16 -mt-8 items-center justify-center rounded-full bg-[#C9FF1A]"
+        className="h-16 w-16 -mt-10 items-center justify-center rounded-full bg-[#C9FF1A]"
         style={{
+          // Shadow lebih dramatis untuk Floating Button
           shadowColor: "#C9FF1A",
-          shadowOpacity: 0.35,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: 6 },
-          elevation: 8,
+          shadowOpacity: 0.4,
+          shadowRadius: 15,
+          shadowOffset: { width: 0, height: 8 },
+          elevation: 10,
+          borderWidth: 4,
+          borderColor: "#070707", // Border agar tidak "nempel" dengan background hitam
         }}
       >
-        <Ionicons name="add" size={30} color="#111827" />
+        <Ionicons name="add" size={35} color="#000" />
       </View>
     </TouchableOpacity>
   );
@@ -32,22 +35,37 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#1F2A44",
-        tabBarInactiveTintColor: "#8F96A3",
+        tabBarActiveTintColor: "#C9FF1A", // Warna Neon/Lime kamu
+        tabBarInactiveTintColor: "#5E6678",
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontFamily: "PoppinsMedium",
-          marginBottom: Platform.OS === "ios" ? 0 : 4,
+          fontSize: 11,
+          fontFamily: "Poppins-Medium",
+          marginBottom: Platform.OS === "ios" ? 0 : 12,
         },
         tabBarStyle: {
-          height: Platform.OS === "ios" ? 88 : 74,
-          paddingTop: 8,
-          paddingBottom: Platform.OS === "ios" ? 16 : 10,
-          backgroundColor: "#FFFFFF",
-          borderTopWidth: 1,
-          borderTopColor: "#ECEEF2",
-          elevation: 0,
+          // --- ROUNDED ATAS SAJA ---
+          height: Platform.OS === "ios" ? 94 : 78,
+          backgroundColor: "#151517", // Abu-abu gelap agar lekukan terlihat di atas hitam pekat
+          borderTopLeftRadius: 32, // Lekukan kiri atas
+          borderTopRightRadius: 32, // Lekukan kanan atas
+          borderTopWidth: 0, // Hilangkan garis standar
+
+          // Shadow agar bagian atas yang melengkung terlihat "berjarak" dari konten
+          shadowColor: "#000",
+          shadowOpacity: 0.4,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: -8 },
+          elevation: 20,
+
+          // Posisi tetap di bawah (bukan floating melayang)
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+
+          paddingTop: 10,
+          paddingBottom: Platform.OS === "ios" ? 32 : 12,
         },
       }}
     >
@@ -57,8 +75,8 @@ export default function TabLayout() {
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={22}
+              name={focused ? "grid" : "grid-outline"} // Menggunakan icon grid agar lebih modern
+              size={24}
               color={color}
             />
           ),
@@ -81,41 +99,13 @@ export default function TabLayout() {
           title: "History",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "list" : "list-outline"}
-              size={22}
+              name={focused ? "receipt" : "receipt-outline"} // Icon receipt lebih cocok untuk expense tracker
+              size={24}
               color={color}
             />
           ),
         }}
       />
-
-      {/* <Tabs.Screen
-        name="summary"
-        options={{
-          title: "Summary",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "pie-chart" : "pie-chart-outline"}
-              size={22}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={22}
-              color={color}
-            />
-          ),
-        }}
-      /> */}
     </Tabs>
   );
 }

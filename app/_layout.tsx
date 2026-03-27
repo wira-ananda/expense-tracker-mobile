@@ -10,7 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import "../global.css";
+import "../styles/global.css";
 
 export const unstable_settings = {
   initialRouteName: "(auth)",

@@ -1,9 +1,14 @@
 import {
-  CategoryType,
   useCategoriesQuery,
   useCreateTransactionMutation,
 } from "@/hooks/use-transaction";
+import {
+  TRANSACTION_TABS,
+  TransactionType,
+  getCategoryVisual,
+} from "@/middleware/constants";
 import errorMiddleware from "@/middleware/error-middleware";
+import { appShadows } from "@/styles/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -14,7 +19,6 @@ import {
   Modal,
   Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -23,11 +27,6 @@ import {
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const TRANSACTION_TABS: { label: string; value: CategoryType }[] = [
-  { label: "Expense", value: "expense" },
-  { label: "Income", value: "income" },
-];
 
 const ALLOWED_CATEGORY_ORDER = [
   "Makan",
@@ -88,112 +87,11 @@ function parseDateInput(value: string) {
   return isValid ? date : null;
 }
 
-function getCategoryVisual(categoryName: string, type: CategoryType) {
-  const category = categoryName.toLowerCase();
-  const isIncome = type === "income";
-
-  if (category.includes("makan")) {
-    return {
-      icon: "restaurant" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#EAF1FF",
-      iconColor: "#4F8DF7",
-    };
-  }
-
-  if (category.includes("belanja")) {
-    return {
-      icon: "cart" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#FDECEC",
-      iconColor: "#FF5D52",
-    };
-  }
-
-  if (category.includes("transport")) {
-    return {
-      icon: "bus" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#EAF1FF",
-      iconColor: "#4F8DF7",
-    };
-  }
-
-  if (category.includes("listrik")) {
-    return {
-      icon: "flash" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#FFF3E8",
-      iconColor: "#F29C4B",
-    };
-  }
-
-  if (category.includes("internet")) {
-    return {
-      icon: "wifi" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#EAF1FF",
-      iconColor: "#4F8DF7",
-    };
-  }
-
-  if (category.includes("hiburan")) {
-    return {
-      icon: "game-controller" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#F4EEFF",
-      iconColor: "#8B5CF6",
-    };
-  }
-
-  if (category.includes("gaji")) {
-    return {
-      icon: "wallet" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#EAF8F0",
-      iconColor: "#2FB36F",
-    };
-  }
-
-  if (category.includes("bonus")) {
-    return {
-      icon: "gift" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#EEF7FF",
-      iconColor: "#3B82F6",
-    };
-  }
-
-  if (category.includes("hadiah")) {
-    return {
-      icon: "gift" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#FFF4E6",
-      iconColor: "#F59E0B",
-    };
-  }
-
-  if (category.includes("investasi")) {
-    return {
-      icon: "bar-chart" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#F3EEFF",
-      iconColor: "#8B5CF6",
-    };
-  }
-
-  if (category.includes("penjualan")) {
-    return {
-      icon: "storefront" as keyof typeof Ionicons.glyphMap,
-      iconBg: "#E8FBF3",
-      iconColor: "#10B981",
-    };
-  }
-
-  return {
-    icon: isIncome
-      ? ("trending-up" as keyof typeof Ionicons.glyphMap)
-      : ("wallet" as keyof typeof Ionicons.glyphMap),
-    iconBg: isIncome ? "#EAF8F0" : "#EAF1FF",
-    iconColor: isIncome ? "#2FB36F" : "#4F8DF7",
-  };
-}
-
 export default function AddScreen() {
   const router = useRouter();
   const amountInputRef = useRef<TextInput>(null);
 
-  const [selectedType, setSelectedType] = useState<CategoryType>("expense");
+  const [selectedType, setSelectedType] = useState<TransactionType>("expense");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [amountInput, setAmountInput] = useState("");
   const [dateInput, setDateInput] = useState(formatDateForInput(new Date()));
@@ -343,14 +241,14 @@ export default function AddScreen() {
             <TouchableOpacity
               activeOpacity={0.85}
               onPress={handleClose}
-              style={styles.headerIconShadow}
+              style={appShadows.softButton}
               className="h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F7]"
             >
               <Ionicons name="close" size={20} color="#3C4456" />
             </TouchableOpacity>
 
             <View className="flex-1 items-center pr-11">
-              <Text className="font-poppins-bold text-[24px] text-[#182033]">
+              <Text className="font-poppins-bold text-[18px] text-[#182033]">
                 Add Transaction
               </Text>
             </View>
@@ -431,7 +329,7 @@ export default function AddScreen() {
                 </TouchableOpacity>
 
                 <View className="mt-2">
-                  <Text className="mb-2 font-poppins-semibold text-[16px] text-[#182033]">
+                  <Text className="mb-1 mx-2 font-poppins-semibold text-[16px] text-[#182033]">
                     Category
                   </Text>
 
@@ -484,8 +382,8 @@ export default function AddScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <View className="mt-3">
-                  <Text className="mb-1 font-poppins-semibold text-[16px] text-[#182033]">
+                <View className="mt-2">
+                  <Text className="mb-1 mx-2 font-poppins-semibold text-[16px] text-[#182033]">
                     Date
                   </Text>
 
@@ -522,12 +420,12 @@ export default function AddScreen() {
                   </View>
                 </View>
 
-                <View className="mt-4">
-                  <Text className="mb-2 font-poppins-semibold text-[16px] text-[#182033]">
+                <View className="mt-2">
+                  <Text className="mb-1 mx-2 font-poppins-semibold text-[16px] text-[#182033]">
                     Note (Optional)
                   </Text>
 
-                  <View className="min-h-[126px] flex-row rounded-[18px] border border-[#DDE2EB] bg-white px-4 py-2">
+                  <View className="min-h-[120px] flex-row rounded-[18px] border border-[#DDE2EB] bg-white px-4 py-2">
                     <Ionicons
                       name="create-outline"
                       size={20}
@@ -557,28 +455,28 @@ export default function AddScreen() {
                     </Text>
                   </TouchableOpacity>
                 ) : null}
-              </ScrollView>
 
-              <View className="border-t border-[#ECEDEF] px-5 py-5">
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={handleSave}
-                  disabled={isPending || !filteredCategories.length}
-                  className={`items-center justify-center rounded-[18px] py-4 ${
-                    isPending || !filteredCategories.length
-                      ? "bg-[#D9ECA1]"
-                      : "bg-[#B5F50A]"
-                  }`}
-                >
-                  {isPending ? (
-                    <ActivityIndicator color="#182033" />
-                  ) : (
-                    <Text className="font-poppins-bold text-[18px] text-[#101828]">
-                      Save Transaction
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
+                <View className="border-t border-[#ECEDEF] py-3">
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={handleSave}
+                    disabled={isPending || !filteredCategories.length}
+                    className={`items-center justify-center rounded-[18px] py-4 ${
+                      isPending || !filteredCategories.length
+                        ? "bg-primary-100"
+                        : "bg-primary-500"
+                    }`}
+                  >
+                    {isPending ? (
+                      <ActivityIndicator color="#182033" />
+                    ) : (
+                      <Text className="font-poppins-bold text-[18px] text-white">
+                        Save Transaction
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </>
           )}
         </View>
@@ -678,13 +576,3 @@ export default function AddScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  headerIconShadow: {
-    shadowColor: "#1B2431",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-  },
-});
